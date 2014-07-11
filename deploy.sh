@@ -42,20 +42,14 @@ contains() {
 release_uri() {
 	if [ -z "$1" ]
 	then
-		echo "arg1 is expected valid repository name"
-		exit -1
-	fi
-
-	if [ -z "$2" ]
-	then
 		echo "arg2 is expected valid TAG"
 		exit -1
 	fi
 
-	uri=`curl -s -H "Accept: application/vnd.github.manifold-preview" -u "$CREDENTIALS" https://api.github.com/repos/$REPONAME/$1/releases | python -c "import sys; import json; data = json.load(sys.stdin); print filter(lambda y: y['tag_name'] == '$2', map(lambda x: x, data))[0]['assets'][0]['url']" 2> /dev/null`
+	uri=`curl -s -H "Accept: application/vnd.github.manifold-preview" -u "$CREDENTIALS" https://api.github.com/repos/$REPONAME/releases | python -c "import sys; import json; data = json.load(sys.stdin); print filter(lambda y: y['tag_name'] == '$1', map(lambda x: x, data))[0]['assets'][0]['url']" 2> /dev/null`
 
 	if [ $? -ne 0 ]; then
-		echo "Unable to get release url for https://api.github.com/repos/$REPONAME/$1/releases tag: $2"
+		echo "Unable to get release url for https://api.github.com/repos/$REPONAME/releases tag: $1"
 		exit -1
 	fi
 
@@ -85,13 +79,13 @@ if [ ! -f $DEPLOY_CFG ]; then
 	exit -1
 fi
 
-REPONAME=$(get_json_field "reponame")
+ORG_NAME=$(get_json_field "github_org")
 CREDENTIALS=$(get_json_field "credentials")
 PROJECTS="$(get_json_field 'projects')"
 PROJECTS_HOME=$(get_json_field "projects_home")
 
 show_cfg() {
-	echo -e "\nREPONAME: "$REPONAME
+	echo -e "\nORG_NAME: "$ORG_NAME
 	echo "CREDENTIALS: "$CREDENTIALS
 	echo "PROJECTS: ""$PROJECTS"
 	echo "PROJECTS_HOME: "$PROJECTS_HOME
@@ -100,7 +94,15 @@ show_cfg() {
 	cat $DEPLOY_CFG 
 }
 
-if [ -z "$REPONAME" ] || [ -z "$CREDENTIALS" ] || [ -z "$PROJECTS" ] || [ -z "$PROJECTS_HOME" ];then
+if [ ! -z "$ORG_NAME" ]; then
+	REPONAME=$ORG_NAME/$PROJECT
+else
+	REPONAME=$PROJECT
+fi
+
+echo $REPONAME
+
+if [ -z "$CREDENTIALS" ] || [ -z "$PROJECTS" ] || [ -z "$PROJECTS_HOME" ];then
 	echo -e "\nError: Wrong config."
 	show_cfg
 	exit -1
@@ -126,7 +128,7 @@ if [ "$COMMAND" == "test" ];then
 
 	test rm -rf $PROJECT/rc && rm -f $PROJECT/release.zip && mkdir -p $PROJECT/rc
 
-	test curl -s -o $PROJECT/release.zip -L -u $CREDENTIALS -H "Accept: application/octet-stream" $(release_uri "$PROJECT" "$TAG")
+	test curl -s -o $PROJECT/release.zip -L -u $CREDENTIALS -H "Accept: application/octet-stream" $(release_uri "$TAG")
 	
 	test unzip -qq $PROJECT/release.zip -d $PROJECT/rc
 
