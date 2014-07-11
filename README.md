@@ -5,8 +5,7 @@ It acts as a user shell and knows only two commands `test` and `deploy`. For exa
 ssh deployuser@mega-server test myproject tag.0.0.123
 ``` 
 
-will evaluate following tasks:
-- asdf
+will download and deploy to the test environment release.zip with tag.0.0.123
 
 
 ### Limitations and todo
