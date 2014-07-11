@@ -1,0 +1,6 @@
+{
+	"credentials"   : "someuser:somepassword",
+	"github_root"   : "megavisor",
+	"projects"      : "project1 project2 site-v2",
+	"projects_home" : "/tmp/home"
+}
