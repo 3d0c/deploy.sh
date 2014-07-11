@@ -10,11 +10,11 @@ will download and deploy to the test environment release.zip with tag.0.0.123
 
 ### Limitations and todo
 - Basic auth
-- It gets the first asset from assets array. (some logic should be added here, may be filename in config or something, e.g: 'release-file-name':'release.zip')
+- It gets first asset from assets array. (some logic should be added here, may be filename in config or something, e.g: 'release-file-name':'release.zip')
 - per project exclusion list in config
 - per project after installation tasks (e.g.: forever restart, etc...)
 - check tag. Now, if tag is not found, script will fail with ugly html output.
-- multiproject support only for github organization.
+- There is only organization based multiproject support.
 
 ### Configuration
 `deploy-cfg.json` should be in same directory
@@ -27,8 +27,6 @@ will download and deploy to the test environment release.zip with tag.0.0.123
 	"projects_home" : "/tmp/home"
 }
 ```
-
-@todo some comments about github organization and repo structure...
 
 ### Installation
 - Create deploy user by running something like this (should work on most linux systems)
