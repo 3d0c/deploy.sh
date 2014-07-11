@@ -33,7 +33,7 @@ will download and deploy to the test environment release.zip with tag.0.0.123
 - Create deploy user by running something like this (should work on most linux systems)
 
 ```sh
-adduser --home /home/deploy --shell /home/someone/deploy.sh
+adduser --home /home/deploy --shell /home/someone/deploy.sh deploy
 ```
 - Put `deploy.sh` and `deploy-cfg.json` into the `/home/deploy` and run:
 
